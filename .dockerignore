@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+.github
+.gitea
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Config files (will be mounted as volume)
+maskarr_config.json
+
+# Documentation
+*.md
+LICENSE
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
