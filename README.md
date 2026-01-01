@@ -349,7 +349,7 @@ Increase the "Timeout" value in the tracker configuration.
 
 ## License
 
-MIT
+GNU GPL V3.0
 
 ## Contributing
 
