@@ -65,8 +65,8 @@ Press Ctrl+C to stop
 
 1. Open your browser at `http://localhost:8888`
 2. Fill in the form:
-   - **Tracker ID**: Unique identifier (e.g., `divteam`)
-   - **Domain**: Tracker domain (e.g., `divteam.com`)
+   - **Tracker ID**: Unique identifier (e.g., `mytracker`)
+   - **Domain**: Tracker domain (e.g., `mytracker.com`)
    - **User-Agent**: Browser user-agent you want to use
    - **Additional headers**: JSON with extra headers (optional)
    - **Timeout**: Timeout in seconds (default: 30)
@@ -82,25 +82,22 @@ Each configured tracker will have a unique proxy URL:
 http://localhost:8888/proxy/{tracker_id}/
 ```
 
-For example, if you configured `divteam`:
+For example, if you configured `mytracker`:
 ```
-http://localhost:8888/proxy/divteam/
+http://localhost:8888/proxy/mytracker/
 ```
 
-In Prowlarr:
-1. Go to Settings → Indexers
-2. Add the indexer manually
-3. In "Base URL", use: `http://localhost:8888/proxy/divteam`
-4. Configure the rest of the parameters normally
+You will have to create a custom definition for the indexer, copying one wich has been created already, and modifiyng it's base_url, using: `http://localhost:8888/proxy/mytracker`
+
 
 ## Configuration Examples
 
-### DivTeam
+### Traker without custom headers
 
 ```json
 {
-  "id": "divteam",
-  "domain": "divteam.com",
+  "id": "mytracker",
+  "domain": "mytracker.com",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0",
   "headers": {},
   "timeout": 30,
@@ -133,8 +130,8 @@ Get all configured trackers.
 ```json
 {
   "trackers": {
-    "divteam": {
-      "domain": "divteam.com",
+    "mytracker": {
+      "domain": "mytracker.com",
       "user_agent": "Mozilla/5.0...",
       "headers": {},
       "timeout": 30,
@@ -150,8 +147,8 @@ Add or update a tracker.
 **Body:**
 ```json
 {
-  "id": "divteam",
-  "domain": "divteam.com",
+  "id": "mytracker",
+  "domain": "mytracker.com",
   "user_agent": "Mozilla/5.0...",
   "headers": {},
   "timeout": 30,
@@ -260,13 +257,6 @@ docker run -d \
   maskarr:latest
 ```
 
-#### Multi-architecture
-
-Images support multiple architectures:
-- `linux/amd64` (x86_64)
-- `linux/arm64` (ARM 64-bit, Raspberry Pi 4, Apple Silicon)
-- `linux/arm/v7` (ARM 32-bit, Raspberry Pi 3)
-
 ## CI/CD - Automatic Docker Image Publishing
 
 The project includes workflows for **GitHub Actions** and **Gitea Actions** that automatically publish Docker images.
@@ -278,37 +268,14 @@ Each push to `main`/`master` or tag `v*.*.*` will publish to:
 1. **GitHub Container Registry** (`ghcr.io`) - Primary and most reliable ⭐
 2. **Gitea Container Registry** (your private instance)
 
-### Quick Setup
-
-**📖 [Read the complete setup guide: SETUP_CI.md](SETUP_CI.md)**
-
-The guide includes:
-- Step-by-step configuration for GitHub and Gitea
-- How to create access tokens
-- How to configure secrets
-- Common troubleshooting
-- Usage examples
-
-### Quick Start
-
-#### GitHub:
-1. Upload code to GitHub
-2. Push or create a tag → Image builds automatically
-3. Make the package public to allow `docker pull` without authentication
-
-#### Gitea:
-1. Enable Actions and Container Registry on your instance
-2. Configure the secret `PACKAGE_TOKEN` with `write:package` permissions
-3. Push or create a tag → Image builds automatically
-
 ### Using Published Images
 
 ```bash
 # From GitHub Container Registry (recommended)
-docker pull ghcr.io/your-username/maskarr:latest
+docker pull ghcr.io/dasemu/maskarr:latest
 
 # From Gitea
-docker pull gitea.yourdomain.com/your-username/maskarr:latest
+docker pull git.dariosevilla.es/dasemu/maskarr:latest
 ```
 
 ## Troubleshooting
@@ -337,15 +304,6 @@ Increase the "Timeout" value in the tracker configuration.
 - **Use HTTPS if exposing**: Consider a reverse proxy (nginx, Caddy)
 - **Protect your cookies**: Cookies are passed through the proxy
 - **Check the logs**: Enable `log_requests` for debugging
-
-## Roadmap
-
-- [ ] Basic authentication for the UI
-- [ ] Proxy chain support
-- [ ] Usage statistics per tracker
-- [ ] Rate limiting per tracker
-- [ ] Configuration import/export
-- [ ] User-Agent rotation support
 
 ## License
 
