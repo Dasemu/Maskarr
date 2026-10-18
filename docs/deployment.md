@@ -78,22 +78,12 @@ docker run -d \
 
 ## CI/CD - automatic Docker image publishing
 
-The project includes workflows for **GitHub Actions** and **Gitea Actions** that automatically
-publish Docker images.
-
-### Supported registries
-
-Each push to `main`/`master` or tag `v*.*.*` will publish to:
-
-1. **GitHub Container Registry** (`ghcr.io`) - primary and most reliable
-2. **Gitea Container Registry** (your private instance)
+The GitHub Actions workflow `.github/workflows/docker-publish.yml` publishes the Docker image to
+**GitHub Container Registry** (`ghcr.io`) on each push to `main`/`master` or tag `v*.*.*`.
+CI and versioning run on Gitea Actions (`.gitea/workflows/` (CI also runs on GitHub)).
 
 ### Using published images
 
 ```bash
-# From GitHub Container Registry (recommended)
 docker pull ghcr.io/dasemu/maskarr:latest
-
-# From Gitea
-docker pull git.dariosevilla.es/dasemu/maskarr:latest
 ```
