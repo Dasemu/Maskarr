@@ -22,7 +22,7 @@ Everything lives in `maskarr.py`: an `http.server`-based proxy that forwards req
 - No `development` branch exists yet; CI and the version workflow reference it per the standard shape, but they won't trigger until it's created.
 
 ## Deployment
-Docker image published to GHCR and the private Gitea registry on push to `main`/tags (`.github/workflows/docker-publish.yml`, `.gitea/workflows/docker-publish.yml`). See `docs/deployment.md` for systemd and Docker instructions.
+Docker image published to GHCR only, on push to `main`/tags (`.github/workflows/docker-publish.yml`). CI and version workflows live in `.gitea/workflows/`. See `docs/deployment.md` for systemd and Docker instructions.
 
 ## Gotchas
 - `maskarr_config.json` is tracked as an empty template; don't commit it populated with real tracker credentials/cookies.
