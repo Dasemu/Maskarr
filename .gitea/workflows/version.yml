@@ -7,6 +7,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: version-${{ gitea.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   bump:
     if: ${{ !contains(gitea.event.head_commit.message, '[skip ci]') && gitea.actor != 'gitea-actions' }}
@@ -14,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ gitea.ref_name }}
           fetch-depth: 0
           token: ${{ gitea.token }}
 
@@ -57,6 +62,7 @@ jobs:
         run: |
           git add VERSION
           git commit -m "chore(release): v${{ steps.version.outputs.new }} [skip ci]"
+          git pull --rebase origin ${{ gitea.ref_name }}
           git push origin HEAD:${{ gitea.ref_name }}
 
       - name: Merge main back into development
