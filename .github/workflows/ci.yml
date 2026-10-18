@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [development]
+  push:
+    branches: [development, main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - run: pip install -r requirements.txt
+
+      # No linter or test suite is configured for this project yet.
+      # This is a lightweight sanity check (syntax/import compile), not a test run.
+      - run: python3 -m py_compile maskarr.py
