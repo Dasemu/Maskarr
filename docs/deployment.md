@@ -81,6 +81,7 @@ docker run -d \
 The GitHub Actions workflow `.github/workflows/docker-publish.yml` publishes the Docker image to
 **GitHub Container Registry** (`ghcr.io`) on each push to `main`/`master` or tag `v*.*.*`.
 CI and versioning run on Gitea Actions (`.gitea/workflows/` (CI also runs on GitHub)).
+Every push to `main` creates a `vX.Y.Z` tag and release on both Gitea (`version.yml`, after the version bump) and GitHub (`release` job in `ci.yml`).
 
 ### Using published images
 

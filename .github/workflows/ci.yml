@@ -22,3 +22,40 @@ jobs:
       # No linter or test suite is configured for this project yet.
       # This is a lightweight sanity check (syntax/import compile), not a test run.
       - run: python3 -m py_compile maskarr.py
+
+  release:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # The version bump lands as a later "chore(release)" commit on main, so
+      # wait for it and release that commit instead of the pre-bump one.
+      - name: Resolve release commit
+        id: rel
+        run: |
+          sha="${{ github.sha }}"
+          for i in $(seq 1 30); do
+            git fetch -q origin main
+            bump=$(git log --reverse --format='%H %s' "$sha..origin/main" | grep -m1 ' chore(release): v' | cut -d' ' -f1 || true)
+            if [ -n "$bump" ]; then sha="$bump"; break; fi
+            sleep 20
+          done
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "version=$(git show "$sha:VERSION")" >> "$GITHUB_OUTPUT"
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v${{ steps.rel.outputs.version }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists, skipping"
+          else
+            gh release create "$tag" --target "${{ steps.rel.outputs.sha }}" --title "$tag" --generate-notes
+          fi

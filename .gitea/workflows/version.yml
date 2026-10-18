@@ -65,6 +65,22 @@ jobs:
           git pull --rebase origin ${{ gitea.ref_name }}
           git push origin HEAD:${{ gitea.ref_name }}
 
+      - name: Create release
+        if: gitea.ref_name == 'main'
+        env:
+          TOKEN: ${{ gitea.token }}
+          TAG: v${{ steps.version.outputs.new }}
+          API: ${{ gitea.server_url }}/api/v1/repos/${{ gitea.repository }}
+        run: |
+          status=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: token $TOKEN" "$API/releases/tags/$TAG")
+          if [ "$status" = "200" ]; then
+            echo "Release $TAG already exists, skipping"
+            exit 0
+          fi
+          curl -sf -X POST -H "Authorization: token $TOKEN" -H "Content-Type: application/json" \
+            -d "{\"tag_name\": \"$TAG\", \"target_commitish\": \"$(git rev-parse HEAD)\", \"name\": \"$TAG\", \"body\": \"Release $TAG\"}" \
+            "$API/releases"
+
       - name: Merge main back into development
         if: gitea.ref_name == 'main'
         run: |
